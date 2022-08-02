@@ -7,6 +7,7 @@ import Categories from "@/views/Categories.vue";
 import Settings from "@/views/Settings.vue";
 import jwt_decode from "jwt-decode";
 
+
 const routes = [
   {
     path: "/",
@@ -56,18 +57,20 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("id");
   let isAuthenticated =  false;
 
   if(token){
-    let decoded = jwt_decode(token)
-    // console.log(decoded)
-    const expirydate = new Date(decoded.exp * 1000)
-    const now = new Date()
+    // let decoded = jwt_decode(token)
+    // // console.log(decoded)
+    // const expirydate = new Date(decoded.exp * 1000)
+    // const now = new Date()
 
-    if(now < expirydate ){
-     isAuthenticated = true
-    }
+    // if(now < expirydate ){
+    //  isAuthenticated = true
+    // }
+
+    isAuthenticated = true
    
   }
  

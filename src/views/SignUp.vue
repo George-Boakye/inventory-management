@@ -101,17 +101,18 @@ export default {
     sendData() {
       axios
         .post(
-          "https://enyata-inventory.herokuapp.com/api/v1/auth/signup",
+          "http://localhost:3000/api/users/signup",
           this.userInfo
         )
         .then((response) => {
           // localStorage.setItem('status',response.data.status)
-          alert(response.data.message)
-          if(response.data.message === 'success'){
+          // alert(response.data.message)
+          // if(response.data.message === 'success'){
+          //   }else{
+          //     return false
+          // }
+          console.log(response)
             this.$router.push('/')
-          }else{
-            return false
-          }
           })
           
         .catch((error) => console.log(error));

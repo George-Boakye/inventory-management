@@ -10,44 +10,70 @@
             <input type="text" placeholder="Search product by name" />
           </div>
           <div>
-            <button>Add Product</button>
+            <button @click="addProduct()">Add Product</button>
           </div>
         </div>
-        <div style="overflow-x:auto;">
-        <table>
-          <tr class="headers">
-            <th><div class="box"></div></th>
-            <th class="name">Name</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Status</th>
-            <th>Category</th>
-          </tr>
-          <tr>
-            <td><div class="box"></div></td>
-            <td>Milo sachet</td>
-            <td>36</td>
-            <td>2</td>
-            <td>In-stock</td>
-            <td>Beverage</td>
-          </tr>
-          <tr>
-            <td><div class="box"></div></td>
-            <td>Milo sachet</td>
-            <td>36</td>
-            <td>2</td>
-            <td>In-stock</td>
-            <td>Beverage</td>
-          </tr>
-          <tr>
-            <td><div class="box"></div></td>
-            <td>Kleesoft Washing Powder</td>
-            <td>36</td>
-            <td>2</td>
-            <td>In-stock</td>
-            <td>Detergents</td>
-          </tr>
-        </table>
+        <div style="overflow-x: auto">
+          <table>
+            <tr class="headers">
+              <th><div class="box"></div></th>
+              <th class="name">
+                <input type="text" placeholder="Name" v-model="product.name" />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  placeholder="Quantity"
+                  v-model="product.quantity"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  placeholder="Unit Price"
+                  v-model="product.price"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  placeholder="Status"
+                  v-model="product.status"
+                />
+              </th>
+              <th>
+                <input
+                  type="text"
+                  placeholder="Category"
+                  v-model="product.category"
+                />
+              </th>
+            </tr>
+            <tr v-for="product in allProducts" :key="product._id">
+              <td><div class="box"></div></td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.quantiity }}</td>
+              <td>{{ product.price }}</td>
+              <td>{{ product.status }}</td>
+              <td>{{ product.category }}</td>
+            </tr>
+            <!-- <tr>
+              <td><div class="box"></div></td>
+              <td>Milo sachet</td>
+              <td>36</td>
+              <td>2</td>
+              <td>In-stock</td>
+              <td>Beverage</td>
+            </tr>
+            <tr>
+              <td><div class="box"></div></td>
+              <td>Kleesoft Washing Powder</td>
+              <td>36</td>
+              <td>2</td>
+              <td>In-stock</td>
+              <td>Detergents</td>
+            </tr> -->
+          </table>
         </div>
         <div class="bottom-layer">
           <div>
@@ -60,7 +86,7 @@
             <input type="text" />
             <button>
               <img src="../assets/ph_caret-up-bold-foward.svg" alt="" />
-               <span>Next</span> 
+              <span>Next</span>
             </button>
             <button>
               <img src="../assets/ph_caret-double-up-bold-forward.svg" alt="" />
@@ -73,14 +99,59 @@
 </template>
 
 <script>
+import axios from "axios";
 import SideNav from "@/components/SideNav.vue";
 import TopNav from "@/components/TopNav.vue";
 import TheLayout from "@/components/TheLayout.vue";
+import { mapActions, mapGetters } from "vuex";
 export default {
   components: {
     SideNav,
     TopNav,
     TheLayout,
+  },
+  async created() {
+    await getProducts();
+  },
+  async updated() {
+    await getProducts();
+  },
+  data() {
+    return {
+      product: {
+        name: "",
+        price: "",
+        quantiity: "",
+        status: "",
+        category: "",
+      },
+    };
+  },
+  computed: {
+    ...mapGetters({
+      allProducts: "getAllProducts",
+    }),
+  },
+  methods: {
+    ...mapActions({
+      getProducts: "getProducts",
+    }),
+    addProduct() {
+      // const userId = localStorage.getItem("id");
+      axios
+        .post(`http://localhost:3000/api/products`, this.product)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.product.name = "";
+      this.product.price = "";
+      this.product.quantiity = "";
+      this.product.category = "";
+      this.product.status = "";
+    },
   },
 };
 </script>
@@ -132,7 +203,7 @@ h1 {
     font-weight: 400;
     font-size: 18px;
     line-height: 150%;
-   
+    cursor: pointer;
   }
 }
 
@@ -149,6 +220,21 @@ table {
   .headers {
     height: 56px;
     background: #f9f9f9;
+
+    input {
+      border: none;
+      outline: none;
+      width: 120px;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 120%;
+      color: #000;
+      background: #f9f9f9;
+
+      &::placeholder {
+        color: #000;
+      }
+    }
   }
   th {
     font-weight: 700;

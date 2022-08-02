@@ -55,12 +55,14 @@ export default {
     logIn() {
       axios
         .post(
-          "https://enyata-inventory.herokuapp.com/api/v1/auth/login",
+          "http://localhost:3000/api//users/auth/signin",
           this.userInfo
         )
         .then((response) =>{
-          localStorage.setItem('token',response.data.data.token)
-          localStorage.setItem('data', response.data.data.user.fullName)
+          // localStorage.setItem('token',response.data.data.token)
+          localStorage.setItem('data', response.data.data.fullName)
+          localStorage.setItem('id', response.data.data._id)
+          // console.log(response.data.data)
           this.$router.push('/dashboard')
         //  alert(response.data.message)
          })
