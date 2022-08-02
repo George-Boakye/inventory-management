@@ -1,7 +1,11 @@
 <template>
   <the-layout>
-    <template v-slot:side-nav><SideNav /></template>
-    <template v-slot:top-nav><TopNav /></template>
+    <template v-slot:side-nav>
+      <SideNav />
+    </template>
+    <template v-slot:top-nav>
+      <TopNav />
+    </template>
     <template v-slot:main>
       <h1>In-Stock</h1>
       <div class="container">
@@ -16,43 +20,31 @@
         <div style="overflow-x: auto">
           <table>
             <tr class="headers">
-              <th><div class="box"></div></th>
+              <th>
+                <div class="box"></div>
+              </th>
               <th class="name">
                 <input type="text" placeholder="Name" v-model="product.name" />
               </th>
               <th>
-                <input
-                  type="text"
-                  placeholder="Quantity"
-                  v-model="product.quantity"
-                />
+                <input type="text" placeholder="Quantity" v-model="product.quantity" />
               </th>
               <th>
-                <input
-                  type="text"
-                  placeholder="Unit Price"
-                  v-model="product.price"
-                />
+                <input type="text" placeholder="Unit Price" v-model="product.price" />
               </th>
               <th>
-                <input
-                  type="text"
-                  placeholder="Status"
-                  v-model="product.status"
-                />
+                <input type="text" placeholder="Status" v-model="product.status" />
               </th>
               <th>
-                <input
-                  type="text"
-                  placeholder="Category"
-                  v-model="product.category"
-                />
+                <input type="text" placeholder="Category" v-model="product.category" />
               </th>
             </tr>
             <tr v-for="product in allProducts" :key="product._id">
-              <td><div class="box"></div></td>
-              <td>{{ product.name }}</td>
-              <td>{{ product.quantiity }}</td>
+              <td>
+                <div class="box"></div>
+              </td>
+              <td>{{product.name}}</td>
+              <td>{{ product.quantity }}</td>
               <td>{{ product.price }}</td>
               <td>{{ product.status }}</td>
               <td>{{ product.category }}</td>
@@ -111,17 +103,25 @@ export default {
     TheLayout,
   },
   async created() {
-    await getProducts();
+        const userId = localStorage.getItem("id");
+    await this.fetchProducts(userId);
+      console.log('all products',this.allProducts)
   },
+  // async mounted(){
+  //     const userId = localStorage.getItem("id");
+  //   await this.fetchProducts(userId);
+  //   console.log(this.allProducts)
+  // },
   async updated() {
-    await getProducts();
+    const userId = localStorage.getItem("id");
+    await this.fetchProducts(userId);
   },
   data() {
     return {
       product: {
         name: "",
+        quantity: "",
         price: "",
-        quantiity: "",
         status: "",
         category: "",
       },
@@ -133,13 +133,11 @@ export default {
     }),
   },
   methods: {
-    ...mapActions({
-      getProducts: "getProducts",
-    }),
+    ...mapActions(['fetchProducts']),
     addProduct() {
-      // const userId = localStorage.getItem("id");
+      const userId = localStorage.getItem("id");
       axios
-        .post(`http://localhost:3000/api/products`, this.product)
+        .post(`http://localhost:3000/api/${userId}/products`, this.product)
         .then((response) => {
           console.log(response);
         })
@@ -148,7 +146,7 @@ export default {
         });
       this.product.name = "";
       this.product.price = "";
-      this.product.quantiity = "";
+      this.product.quantity = "";
       this.product.category = "";
       this.product.status = "";
     },
@@ -164,12 +162,14 @@ h1 {
   letter-spacing: -0.04em;
   color: #1d2128;
 }
+
 .container {
   margin-top: 16px;
   background: #fff;
   height: calc(100vh - 296px);
   padding: 32px;
 }
+
 .top-layer {
   display: flex;
   justify-content: space-between;
@@ -212,11 +212,13 @@ table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+
   tr {
     height: 56px;
     background: #fff;
     border-bottom: 1px solid #f0f0f0;
   }
+
   .headers {
     height: 56px;
     background: #f9f9f9;
@@ -236,18 +238,21 @@ table {
       }
     }
   }
+
   th {
     font-weight: 700;
     font-size: 18px;
     line-height: 120%;
     padding: 16px 24px;
   }
+
   td {
     font-weight: 400;
     font-size: 16px;
     line-height: 120%;
     padding: 16px 24px;
   }
+
   .box {
     width: 22px;
     height: 24px;
@@ -265,12 +270,14 @@ table {
     grid-template-columns: repeat(5, max-content);
     gap: 0 10px;
   }
+
   input {
     width: 44px;
     height: 32px;
     border: 1px solid #9599a0;
     border-radius: 8px;
   }
+
   button {
     padding: 0 16px;
     height: 32px;

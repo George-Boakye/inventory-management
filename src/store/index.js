@@ -4,10 +4,10 @@ import axios from 'axios'
 
 export default createStore({
   state: {
-    allProducts:[]
+    allProducts:[],
   },
   getters: {
-    getAllProducts: (state) =>{state.allProducts}
+    getAllProducts: (state) => state.allProducts,
   },
   mutations: {
     SET_ALL_PRODUCTS(state, payload){
@@ -15,16 +15,15 @@ export default createStore({
     }
   },
   actions: {
-    async getProducts({commit}){
+    async fetchProducts({commit}, id){
       try {
-        let resp =  await axios.get('http://localhost:3000/api/all/products')
-        commit('SET_ALL_PRODUCTS', resp.data)
+        let resp =  await axios.get(`http://localhost:3000/api/user/${id}`)
+        console.log(resp.data.data.products)
+        commit('SET_ALL_PRODUCTS', resp.data?.data?.products)
         return resp
       } catch (error) {
         console.log (error)
       }
     }
   },
-  modules: {
-  }
 })
